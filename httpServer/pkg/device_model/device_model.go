@@ -20,9 +20,15 @@ type DeviceModel struct{
 }
 
 func (dm *DeviceModel) AddDeviceModel(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dmName := gjson.GetBytes(body, "metadata.name").String()
-	dmNamespace := gjson.GetBytes(body, "metadata.namespace").String() 
+	dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
     fmt.Println(dmName)
 	fmt.Println(dmNamespace)
 
@@ -32,8 +38,8 @@ func (dm *DeviceModel) AddDeviceModel(ctx *gin.Context){
         },
     }
 
-	result := &v1alpha1.DeviceModel{}
-    err := dm.Client.Post().Namespace(dmNamespace).Resource("devicemodels").Body(devicemodel).Do().Into(result)
+	//result := &v1alpha1.DeviceModel{}
+    err := dm.Client.Post().Namespace(dmNamespace).Resource("devicemodels").Body(devicemodel).Do().Error()
     if err != nil {
         fmt.Println(err)
         ctx.JSON(400, gin.H{
@@ -46,6 +52,12 @@ func (dm *DeviceModel) AddDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dmName := gjson.GetBytes(body, "metadata.name").String()
     dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -57,7 +69,7 @@ func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
     if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{
-            "message": "DeviceModel not exist",
+            "message": "DeviceModel or Namespace not exist",
             "code":  404,
             "reason":  err,
         })
@@ -67,6 +79,12 @@ func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) ListDeviceModel(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     result := &v1alpha1.DeviceModelList{}
     err := dm.Client.Get().Resource("devicemodels").Body(&metav1.GetOptions{}).Do().Into(result)
     if err != nil {
@@ -82,6 +100,12 @@ func (dm *DeviceModel) ListDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) DeleteDeviceModel(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dmName := gjson.GetBytes(body, "metadata.name").String()
     dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -103,6 +127,12 @@ func (dm *DeviceModel) DeleteDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) UpdateDeviceModel(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dmName := gjson.GetBytes(body, "metadata.name").String()
     dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()

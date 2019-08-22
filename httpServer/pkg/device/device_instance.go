@@ -18,6 +18,12 @@ type Device struct{
 }
 
 func (di *Device) AddDevice(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
 	body, _ := ioutil.ReadAll(ctx.Request.Body)
     diName := gjson.GetBytes(body, "metadata.name").String()
     diNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -99,6 +105,12 @@ func (di *Device) AddDevice(ctx *gin.Context){
 }
 
 func (di *Device) GetDevice(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
 	body, _ := ioutil.ReadAll(ctx.Request.Body)
     diName := gjson.GetBytes(body, "metadata.name").String()
     diNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -118,6 +130,12 @@ func (di *Device) GetDevice(ctx *gin.Context){
 }
 
 func (di *Device) ListDevice(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     deviceList := &v1alpha1.DeviceList{}
     err := di.Client.Get().Resource("devices").Body(&metav1.GetOptions{}).Do().Into(deviceList)
     if err != nil {
@@ -133,6 +151,12 @@ func (di *Device) ListDevice(ctx *gin.Context){
 }
 
 func (di *Device) DeleteDevice(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     diName := gjson.GetBytes(body, "metadata.name").String()
     diNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -154,6 +178,12 @@ func (di *Device) DeleteDevice(ctx *gin.Context){
 }
 
 func (di *Device) UpdateDevice(ctx *gin.Context){
+	ctx.Header("Access-Control-Allow-Origin", "*")
+	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	ctx.Header("Access-Control-Allow-Credentials", "true")
+
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     diName := gjson.GetBytes(body, "metadata.name").String()
     diNamespace := gjson.GetBytes(body, "metadata.namespace").String()
