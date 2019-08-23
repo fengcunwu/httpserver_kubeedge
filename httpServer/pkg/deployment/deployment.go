@@ -18,12 +18,6 @@ type Deployment struct{
 }
 
 func (n *Deployment) AddDeployment(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
 	body, _ := ioutil.ReadAll(ctx.Request.Body)
     dpName := gjson.GetBytes(body, "metadata.name").String()
     dpNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -31,7 +25,7 @@ func (n *Deployment) AddDeployment(ctx *gin.Context){
 	fmt.Println(dpNamespace)
 
 	var a int32
-	a = 2
+	a = 1
     deployment := &appv1.Deployment{
         ObjectMeta: metav1.ObjectMeta{
             Name: dpName,
@@ -67,6 +61,9 @@ func (n *Deployment) AddDeployment(ctx *gin.Context){
                             },
                         },
                     },
+					NodeSelector: map[string]string{
+						"name": "edge-node",
+					},
                 },
             },
 		},
@@ -86,12 +83,6 @@ func (n *Deployment) AddDeployment(ctx *gin.Context){
 }
 
 func (n *Deployment) DeleteDeployment(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dpName := gjson.GetBytes(body, "metadata.name").String()
     dpNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -100,8 +91,9 @@ func (n *Deployment) DeleteDeployment(ctx *gin.Context){
 
 	deployment, err := n.ClientSet.AppsV1().Deployments(dpNamespace).Get(dpName, metav1.GetOptions{})
     if err != nil{
+		fmt.Println(err)
         ctx.JSON(404, gin.H{
-            "message": "Deployment not exist",
+            "message": "Deployment or Namespace not exist",
             "code":  404,
             "reason":  err,
         })
@@ -126,12 +118,6 @@ func (n *Deployment) DeleteDeployment(ctx *gin.Context){
 }
 
 func (n *Deployment) ListDeployment(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     deploymentList, err := n.ClientSet.AppsV1().Deployments(corev1.NamespaceAll).List(metav1.ListOptions{})
     if err != nil {
         ctx.JSON(404, gin.H{
@@ -146,12 +132,6 @@ func (n *Deployment) ListDeployment(ctx *gin.Context){
 }
 
 func (n *Deployment) GetDeployment(ctx *gin.Context){
-    ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dpName := gjson.GetBytes(body, "metadata.name").String()
     dpNamespace := gjson.GetBytes(body, "metadata.namespace").String()
@@ -171,12 +151,6 @@ func (n *Deployment) GetDeployment(ctx *gin.Context){
 }
 
 func (n *Deployment) UpdateDeployment(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     dpName := gjson.GetBytes(body, "metadata.name").String()
 	dpNamespace := gjson.GetBytes(body, "metadata.namespace").String()

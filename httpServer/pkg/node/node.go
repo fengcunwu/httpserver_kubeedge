@@ -18,19 +18,18 @@ type Node struct{
 }
 
 func (n *Node) AddNode(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nodeName := gjson.GetBytes(body, "metadata.name").String()
+	nodeLabels := gjson.GetBytes(body, "metadata.Labels.name").String()
     fmt.Println(nodeName)
+	fmt.Println(nodeLabels)
 
     node := &corev1.Node{
         ObjectMeta: metav1.ObjectMeta{
             Name: nodeName,
+			Labels:map[string]string{
+				"name": nodeLabels,
+			},
         },
     }
 
@@ -48,12 +47,6 @@ func (n *Node) AddNode(ctx *gin.Context){
 }
 
 func (n *Node) DeleteNode(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nodeName := gjson.GetBytes(body, "metadata.name").String()
     fmt.Println(nodeName)
@@ -86,12 +79,6 @@ func (n *Node) DeleteNode(ctx *gin.Context){
 }
 
 func (n *Node) ListNode(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     nodeList, err := n.ClientSet.CoreV1().Nodes().List(metav1.ListOptions{})
     if err != nil {
         ctx.JSON(404, gin.H{
@@ -106,12 +93,6 @@ func (n *Node) ListNode(ctx *gin.Context){
 }
 
 func (n *Node) GetNode(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nodeName := gjson.GetBytes(body, "metadata.name").String()
 
@@ -129,12 +110,6 @@ func (n *Node) GetNode(ctx *gin.Context){
 }
 
 func (n *Node) UpdateNode(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nodeName := gjson.GetBytes(body, "metadata.name").String()
     label_json := gjson.GetBytes(body, "metadata.Labels").String()

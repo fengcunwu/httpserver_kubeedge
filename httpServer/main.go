@@ -7,6 +7,7 @@ import (
 	devicemodel "httpServer/pkg/device_model"
 	device "httpServer/pkg/device"
     "k8s.io/klog"
+	"github.com/gin-contrib/cors"
 	"flag"
 	"github.com/gin-gonic/gin"
 	//"k8s.io/client-go/kubernetes"
@@ -83,6 +84,13 @@ func main(){
     }
 
     router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "PATCH", "DELETE", "POST", "GET"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 
     nsRouter := namespace.Namespace{ClientSet: kubeClient}
     nodeRouter := node.Node{ClientSet: kubeClient}

@@ -18,12 +18,6 @@ type Namespace struct{
 }
 
 func (n *Namespace) AddNamespace(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nsName := gjson.GetBytes(body, "metadata.name").String()
     fmt.Println(nsName)
@@ -48,12 +42,6 @@ func (n *Namespace) AddNamespace(ctx *gin.Context){
 }
 
 func (n *Namespace) DeleteNamespace(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nsName := gjson.GetBytes(body, "metadata.name").String()
     fmt.Println(nsName)
@@ -86,12 +74,6 @@ func (n *Namespace) DeleteNamespace(ctx *gin.Context){
 }
 
 func (n *Namespace) ListNamespace(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     nameSpaceList, err := n.ClientSet.CoreV1().Namespaces().List(metav1.ListOptions{})
     if err != nil {
         ctx.JSON(404, gin.H{
@@ -106,12 +88,6 @@ func (n *Namespace) ListNamespace(ctx *gin.Context){
 }
 
 func (n *Namespace) GetNamespace(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nsName := gjson.GetBytes(body, "metadata.name").String()
 
@@ -129,12 +105,6 @@ func (n *Namespace) GetNamespace(ctx *gin.Context){
 }
 
 func (n *Namespace) UpdateNamespace(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
-
     body, _ := ioutil.ReadAll(ctx.Request.Body)
     nsName := gjson.GetBytes(body, "metadata.name").String()
     label_json := gjson.GetBytes(body, "metadata.Labels").String()
