@@ -18,11 +18,11 @@ type Device struct{
 }
 
 func (di *Device) AddDevice(ctx *gin.Context){
-	ctx.Header("Access-Control-Allow-Origin", "*")
-	ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-	ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
-	ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-	ctx.Header("Access-Control-Allow-Credentials", "true")
+	//ctx.Header("Access-Control-Allow-Origin", "*")
+	//ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	//ctx.Header("Access-Control-Allow-Methods", "POST, GET, PUT,DELETE")
+	//ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	//ctx.Header("Access-Control-Allow-Credentials", "true")
 
 	body, _ := ioutil.ReadAll(ctx.Request.Body)
     diName := gjson.GetBytes(body, "metadata.name").String()
@@ -71,16 +71,16 @@ func (di *Device) AddDevice(ctx *gin.Context){
 		Status: v1alpha1.DeviceStatus{
 			Twins: []v1alpha1.Twin{
 				{
-					PropertyName: "Temperature",
+					PropertyName: "temperature",
 					Desired: v1alpha1.TwinProperty{
-						Value: "55",
+						Value: "11",
 						Metadata:map[string]string{
 							"timestamp": "1550049403598",
 							"type": "int",
 						},
 					},
 					Reported:v1alpha1.TwinProperty{
-						Value: "11",
+						Value: "55",
 						Metadata:map[string]string{
 							"timestamp": "1550049403598",
 							"type": "int",
