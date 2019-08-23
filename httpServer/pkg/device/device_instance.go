@@ -43,7 +43,7 @@ func (di *Device) AddDevice(ctx *gin.Context){
 		},
 		Spec: v1alpha1.DeviceSpec {
 			DeviceModelRef: &v1.LocalObjectReference{
-				Name: "diModel",
+				Name: diModel,
 			},
 			Protocol:  v1alpha1.ProtocolConfig{
 				Modbus: &v1alpha1.ProtocolConfigModbus{
@@ -73,17 +73,17 @@ func (di *Device) AddDevice(ctx *gin.Context){
 				{
 					PropertyName: "Temperature",
 					Desired: v1alpha1.TwinProperty{
-						Value: "12",
+						Value: "55",
 						Metadata:map[string]string{
 							"timestamp": "1550049403598",
-							"type": "string",
+							"type": "int",
 						},
 					},
 					Reported:v1alpha1.TwinProperty{
-						Value: "12",
+						Value: "11",
 						Metadata:map[string]string{
 							"timestamp": "1550049403598",
-							"type": "string",
+							"type": "int",
 						},
 					},
 				},
