@@ -2,15 +2,11 @@ package device_model
 
 import (
     "github.com/gin-gonic/gin"
-    "encoding/json"
-    //"net/http"
+	"github.com/json-iterator/go"
     "fmt"
-    "github.com/tidwall/gjson"
+    //"github.com/tidwall/gjson"
     "io/ioutil"
-    //corev1 "k8s.io/api/core/v1"
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-    //"k8s.io/client-go/kubernetes"
-	//scheme "k8s.io/client-go/kubernetes/scheme"
 	rest "k8s.io/client-go/rest"
 	v1alpha1 "httpServer/pkg/apis/devices/v1alpha1"
 )
@@ -21,20 +17,17 @@ type DeviceModel struct{
 
 func (dm *DeviceModel) AddDeviceModel(ctx *gin.Context){
     body, _ := ioutil.ReadAll(ctx.Request.Body)
-    dmName := gjson.GetBytes(body, "metadata.name").String()
-	dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
+
+	devicemodel := &v1alpha1.DeviceModel{}
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	json.Unmarshal(body,devicemodel)
+
+    dmName := devicemodel.GetName()
+    dmNamespace := devicemodel.GetNamespace()
     fmt.Println(dmName)
-	fmt.Println(dmNamespace)
+    fmt.Println(dmNamespace)
 
-    devicemodel := &v1alpha1.DeviceModel{
-        ObjectMeta: metav1.ObjectMeta{
-            Name: dmName,
-			Namespace: dmNamespace,
-        },
-    }
-
-	//result := &v1alpha1.DeviceModel{}
-    err := dm.Client.Post().Namespace(dmNamespace).Resource("devicemodels").Body(devicemodel).Do().Error()
+	err := dm.Client.Post().Namespace(dmNamespace).Resource("devicemodels").Body(devicemodel).Do().Into(devicemodel)
     if err != nil {
         fmt.Println(err)
         ctx.JSON(400, gin.H{
@@ -47,9 +40,8 @@ func (dm *DeviceModel) AddDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
-    body, _ := ioutil.ReadAll(ctx.Request.Body)
-    dmName := gjson.GetBytes(body, "metadata.name").String()
-    dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
+    dmName := ctx.Param("name")
+    dmNamespace := ctx.Param("namespace")
     fmt.Println(dmName)
     fmt.Println(dmNamespace)
 
@@ -68,12 +60,15 @@ func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) ListDeviceModel(ctx *gin.Context){
-    result := &v1alpha1.DeviceModelList{}
-    err := dm.Client.Get().Resource("devicemodels").Body(&metav1.GetOptions{}).Do().Into(result)
+    dmNamespace := ctx.Param("namespace")
+    fmt.Println(dmNamespace)
+
+	result := &v1alpha1.DeviceModelList{}
+    err := dm.Client.Get().Namespace(dmNamespace).Resource("devicemodels").Body(&metav1.GetOptions{}).Do().Into(result)
     if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{
-            "message": "DeviceModel not exist",
+            "message": "DeviceModel or Namespace not exist",
             "code":  404,
             "reason":  err,
         })
@@ -83,14 +78,13 @@ func (dm *DeviceModel) ListDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) DeleteDeviceModel(ctx *gin.Context){
-    body, _ := ioutil.ReadAll(ctx.Request.Body)
-    dmName := gjson.GetBytes(body, "metadata.name").String()
-    dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
+    dmName := ctx.Param("name")
+    dmNamespace := ctx.Param("namespace")
     fmt.Println(dmName)
     fmt.Println(dmNamespace)
 
-    result := &v1alpha1.DeviceModel{}
-    err := dm.Client.Delete().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(&metav1.DeleteOptions{}).Do().Into(result)
+    devicemodel := &v1alpha1.DeviceModel{}
+    err := dm.Client.Get().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(&metav1.GetOptions{}).Do().Error()
     if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{
@@ -100,23 +94,32 @@ func (dm *DeviceModel) DeleteDeviceModel(ctx *gin.Context){
         })
     }
 
-    ctx.JSON(200, result)
+    err = dm.Client.Delete().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(&metav1.DeleteOptions{}).Do().Error()
+    if err != nil {
+        fmt.Println(err)
+        ctx.JSON(500, gin.H{
+            "message": "Internal error",
+            "code":  500,
+            "reason":  err,
+        })
+    }
+
+    ctx.JSON(200, devicemodel)
 }
 
 func (dm *DeviceModel) UpdateDeviceModel(ctx *gin.Context){
     body, _ := ioutil.ReadAll(ctx.Request.Body)
-    dmName := gjson.GetBytes(body, "metadata.name").String()
-    dmNamespace := gjson.GetBytes(body, "metadata.namespace").String()
-    label_json := gjson.GetBytes(body, "metadata.Labels").String()
-    label_map := make(map[string]string)
-    err := json.Unmarshal([]byte(label_json), &label_map)
-    if err != nil{
-        fmt.Println("JsonToMapDemo err:", err)
-    }
 
 	devicemodel := &v1alpha1.DeviceModel{}
-    err_g := dm.Client.Get().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(&metav1.GetOptions{}).Do().Into(devicemodel)
-    if err_g != nil {
+    var json = jsoniter.ConfigCompatibleWithStandardLibrary
+    json.Unmarshal(body,devicemodel)
+    fmt.Println(devicemodel)
+
+	dmName := devicemodel.GetName()
+	dmNamespace := devicemodel.GetNamespace()
+
+    err := dm.Client.Get().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(&metav1.GetOptions{}).Do().Error()
+    if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{
             "message": "DeviceModel or Namespace not exist",
@@ -125,16 +128,17 @@ func (dm *DeviceModel) UpdateDeviceModel(ctx *gin.Context){
         })
 		return
     }
-    devicemodel.SetLabels(label_map)
 
-	result := &v1alpha1.DeviceModel{}
-    err_d := dm.Client.Put().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(devicemodel).Do().Into(result)
-    if err_d != nil {
+    devicemodel.SetLabels(devicemodel.GetLabels())
+
+    err = dm.Client.Put().Namespace(dmNamespace).Resource("devicemodels").Name(dmName).Body(devicemodel).Do().Error()
+    if err != nil {
         ctx.JSON(400, gin.H{
                 "message": "Internal error",
                 "code":  400,
                 "reason":  err,
             })
         }
-    ctx.JSON(200, result)
+
+    ctx.JSON(200, devicemodel)
 }

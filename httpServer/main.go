@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	namespace "httpServer/pkg/namespace"
@@ -78,7 +78,7 @@ func main(){
         klog.Fatalf("Error building kubernetes clientset: %s", err.Error())
     }
 
-	ClientCrd, err := NewCRDClient(cfg)
+	crdClient, err := NewCRDClient(cfg)
     if err != nil {
         klog.Fatalf("Error building CRDClient error: %s", err.Error())
     }
@@ -95,38 +95,39 @@ func main(){
     nsRouter := namespace.Namespace{ClientSet: kubeClient}
     nodeRouter := node.Node{ClientSet: kubeClient}
 	deploymentRouter := deployment.Deployment{ClientSet: kubeClient}
-	devicemodelRouter := devicemodel.DeviceModel{Client: ClientCrd}
-	deviceRouter := device.Device{Client: ClientCrd}
+	devicemodelRouter := devicemodel.DeviceModel{Client: crdClient}
+	deviceRouter := device.Device{Client: crdClient}
 
-    router.POST("/v1/datacenter/id/cluster/id/namespace", nsRouter.AddNamespace)
-    router.DELETE("/v1/datacenter/id/cluster/id/namespace/delete", nsRouter.DeleteNamespace)
-    router.GET("/v1/datacenter/id/cluster/id/namespace/list", nsRouter.ListNamespace)
-    router.GET("/v1/datacenter/id/cluster/id/namespace/get", nsRouter.GetNamespace)
-    router.PUT("/v1/datacenter/id/cluster/id/namespace/update", nsRouter.UpdateNamespace)
+    router.POST("v1/datacenter/id/cluster/id/namespace/create", nsRouter.AddNamespace)
+    router.DELETE("v1/datacenter/id/cluster/id/namespace/delete", nsRouter.DeleteNamespace)
+    router.GET("v1/datacenter/id/cluster/id/namespace/list", nsRouter.ListNamespace)
+    router.GET("v1/datacenter/id/cluster/id/namespace/get", nsRouter.GetNamespace)
+    router.PUT("v1/datacenter/id/cluster/id/namespace/update", nsRouter.UpdateNamespace)
 
-	router.POST("vl/datacenter/id/cluster/id/node/create", nodeRouter.AddNode)
-	router.DELETE("vl/datacenter/id/cluster/id/node/delete", nodeRouter.DeleteNode)
-	router.GET("vl/datacenter/id/cluster/id/node/list", nodeRouter.ListNode)
-	router.GET("vl/datacenter/id/cluster/id/node/get", nodeRouter.GetNode)
-	router.PUT("vl/datacenter/id/cluster/id/node/update", nodeRouter.UpdateNode)
+	router.POST("v1/datacenter/id/cluster/id/node", nodeRouter.AddNode)
+	router.DELETE("v1/datacenter/id/cluster/id/node/:name", nodeRouter.DeleteNode)
+	router.GET("v1/datacenter/id/cluster/id/nodes", nodeRouter.ListNode)
+	router.GET("v1/datacenter/id/cluster/id/node/:name", nodeRouter.GetNode)
+	router.PUT("v1/datacenter/id/cluster/id/node", nodeRouter.UpdateNode)
 
-	router.POST("vl/datacenter/id/cluster/id/deployment/create", deploymentRouter.AddDeployment)
-	router.DELETE("vl/datacenter/id/cluster/id/deployment/delete", deploymentRouter.DeleteDeployment)
-	router.GET("vl/datacenter/id/cluster/id/deployment/list", deploymentRouter.ListDeployment)
-	router.GET("vl/datacenter/id/cluster/id/deployment/get", deploymentRouter.GetDeployment)
-	router.PUT("vl/datacenter/id/cluster/id/deployment/update", deploymentRouter.UpdateDeployment)
+	router.POST("v1/cluster/id/deployment", deploymentRouter.AddDeployment)
+	router.DELETE("v1/cluster/id/namespace/:namespace/deployment/:name", deploymentRouter.DeleteDeployment)
+	router.GET("v1/cluster/id/namespace/:namespace/deployments", deploymentRouter.ListDeployment)
+	router.GET("v1/cluster/id/namespace/:namespace/deployment/:name", deploymentRouter.GetDeployment)
+	router.PUT("v1/cluster/id/deployment", deploymentRouter.UpdateDeployment)
 
-	router.POST("vl/datacenter/id/cluster/id/devicemodel/create", devicemodelRouter.AddDeviceModel)
-	router.GET("vl/datacenter/id/cluster/id/devicemodel/get", devicemodelRouter.GetDeviceModel)
-	router.GET("vl/datacenter/id/cluster/id/devicemodel/list", devicemodelRouter.ListDeviceModel)
-	router.DELETE("vl/datacenter/id/cluster/id/devicemodel/delete", devicemodelRouter.DeleteDeviceModel)
-	router.PUT("vl/datacenter/id/cluster/id/devicemodel/update", devicemodelRouter.UpdateDeviceModel)
+	router.POST("v1/cluster/id/devicemodel", devicemodelRouter.AddDeviceModel)
+	router.GET("v1/cluster/id/namespace/:namespace/devicemodel/:name", devicemodelRouter.GetDeviceModel)
+	router.GET("v1/cluster/id/namespace/:namespace/devicemodels", devicemodelRouter.ListDeviceModel)
+	router.DELETE("v1/cluster/id/namespace/:namespace/devicemodel/:name", devicemodelRouter.DeleteDeviceModel)
+	router.PUT("v1/cluster/id/devicemodel", devicemodelRouter.UpdateDeviceModel)
 
-	router.POST("vl/datacenter/id/cluster/id/deviceinstance/create", deviceRouter.AddDevice)
-	router.GET("vl/datacenter/id/cluster/id/deviceinstance/get", deviceRouter.GetDevice)
-	router.GET("vl/datacenter/id/cluster/id/deviceinstance/list", deviceRouter.ListDevice)
-	router.DELETE("vl/datacenter/id/cluster/id/deviceinstance/delete", deviceRouter.DeleteDevice)
-	router.PUT("vl/datacenter/id/cluster/id/deviceinstance/update", deviceRouter.UpdateDevice)
+	router.POST("v1/cluster/id/device", deviceRouter.AddDevice)
+	router.GET("v1/cluster/id/namespace/:namespace/device/:name", deviceRouter.GetDevice)
+	router.GET("v1/cluster/id/namespace/:namespace/device", deviceRouter.ListDevice)
+	router.DELETE("v1/cluster/id/namespace/:namespace/device/:name", deviceRouter.DeleteDevice)
+	router.PUT("v1/cluster/id/device", deviceRouter.UpdateDevice)
+
     router.Run(":8000")
 }
 
