@@ -6,7 +6,7 @@ import (
     "fmt"
     "github.com/tidwall/gjson"
     "io/ioutil"
-	//corev1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
     appv1 "k8s.io/api/apps/v1"
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
     "k8s.io/client-go/kubernetes"
@@ -68,11 +68,9 @@ func (n *Deployment) DeleteDeployment(ctx *gin.Context){
 }
 
 func (n *Deployment) ListDeployment(ctx *gin.Context){
-	dpNamespace := ctx.Param("namespace")
-    fmt.Println(dpNamespace)
 
-	//deploymentList, err := n.ClientSet.AppsV1().Deployments(corev1.NamespaceAll).List(metav1.ListOptions{})
-	deploymentList, err := n.ClientSet.AppsV1().Deployments(dpNamespace).List(metav1.ListOptions{})
+	deploymentList, err := n.ClientSet.AppsV1().Deployments(corev1.NamespaceAll).List(metav1.ListOptions{})
+	//deploymentList, err := n.ClientSet.AppsV1().Deployments(dpNamespace).List(metav1.ListOptions{})
     if err != nil {
         ctx.JSON(404, gin.H{
             "message": "Deployment or Namespace not exist",
@@ -104,41 +102,6 @@ func (n *Deployment) GetDeployment(ctx *gin.Context){
 
     ctx.JSON(200, deploymentSrc)
 }
-
-//func (n *Deployment) UpdateDeployment(ctx *gin.Context){
-//    body, _ := ioutil.ReadAll(ctx.Request.Body)
-//    dpName := gjson.GetBytes(body, "metadata.name").String()
-//	dpNamespace := gjson.GetBytes(body, "metadata.namespace").String()
-//
-//    label_json := gjson.GetBytes(body, "metadata.Labels").String()
-//    label_map := make(map[string]string)
-//    err := json.Unmarshal([]byte(label_json), &label_map)
-//    if err != nil{
-//        fmt.Println("JsonToMapDemo err:", err)
-//    }
-//
-//    deployment, err := n.ClientSet.AppsV1().Deployments(dpNamespace).Get(dpName, metav1.GetOptions{})
-//    if err != nil{
-//        ctx.JSON(404, gin.H{
-//            "message": "Deployment not exist",
-//            "code":  404,
-//            "reason":  err,
-//        })
-//        return
-//    }
-//
-//    deployment.SetLabels(label_map)
-//
-//    newDeployment, err := n.ClientSet.AppsV1().Deployments(dpNamespace).Update(deployment)
-//    if err != nil {
-//        ctx.JSON(400, gin.H{
-//                "message": "Internal error",
-//                "code":  400,
-//                "reason":  err,
-//            })
-//        }
-//    ctx.JSON(200, newDeployment)
-//}
 
 func (n *Deployment) UpdateDeployment(ctx *gin.Context){
 

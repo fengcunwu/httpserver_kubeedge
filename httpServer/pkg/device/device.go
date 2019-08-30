@@ -64,10 +64,10 @@ func (di *Device) GetDevice(ctx *gin.Context){
 }
 
 func (di *Device) ListDevice(ctx *gin.Context){
-	diNamespace := ctx.Param("namespace")
+	//diNamespace := ctx.Param("namespace")
 
 	deviceList := &v1alpha1.DeviceList{}
-    err := di.Client.Get().Namespace(diNamespace).Resource("devices").Body(&metav1.GetOptions{}).Do().Into(deviceList)
+    err := di.Client.Get().Resource("devices").Body(&metav1.GetOptions{}).Do().Into(deviceList)
     if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{

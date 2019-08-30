@@ -60,11 +60,11 @@ func (dm *DeviceModel) GetDeviceModel(ctx *gin.Context){
 }
 
 func (dm *DeviceModel) ListDeviceModel(ctx *gin.Context){
-    dmNamespace := ctx.Param("namespace")
-    fmt.Println(dmNamespace)
+    //dmNamespace := ctx.Param("namespace")
+    //fmt.Println(dmNamespace)
 
 	result := &v1alpha1.DeviceModelList{}
-    err := dm.Client.Get().Namespace(dmNamespace).Resource("devicemodels").Body(&metav1.GetOptions{}).Do().Into(result)
+    err := dm.Client.Get().Resource("devicemodels").Body(&metav1.GetOptions{}).Do().Into(result)
     if err != nil {
         fmt.Println(err)
         ctx.JSON(404, gin.H{

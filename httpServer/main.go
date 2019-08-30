@@ -112,19 +112,19 @@ func main(){
 
 	router.POST("v1/cluster/id/deployment", deploymentRouter.AddDeployment)
 	router.DELETE("v1/cluster/id/namespace/:namespace/deployment/:name", deploymentRouter.DeleteDeployment)
-	router.GET("v1/cluster/id/namespace/:namespace/deployments", deploymentRouter.ListDeployment)
+	router.GET("v1/cluster/id/deployments", deploymentRouter.ListDeployment)
 	router.GET("v1/cluster/id/namespace/:namespace/deployment/:name", deploymentRouter.GetDeployment)
 	router.PUT("v1/cluster/id/deployment", deploymentRouter.UpdateDeployment)
 
 	router.POST("v1/cluster/id/devicemodel", devicemodelRouter.AddDeviceModel)
 	router.GET("v1/cluster/id/namespace/:namespace/devicemodel/:name", devicemodelRouter.GetDeviceModel)
-	router.GET("v1/cluster/id/namespace/:namespace/devicemodels", devicemodelRouter.ListDeviceModel)
+	router.GET("v1/cluster/id/devicemodels", devicemodelRouter.ListDeviceModel)
 	router.DELETE("v1/cluster/id/namespace/:namespace/devicemodel/:name", devicemodelRouter.DeleteDeviceModel)
 	router.PUT("v1/cluster/id/devicemodel", devicemodelRouter.UpdateDeviceModel)
 
 	router.POST("v1/cluster/id/device", deviceRouter.AddDevice)
 	router.GET("v1/cluster/id/namespace/:namespace/device/:name", deviceRouter.GetDevice)
-	router.GET("v1/cluster/id/namespace/:namespace/device", deviceRouter.ListDevice)
+	router.GET("v1/cluster/id/devices", deviceRouter.ListDevice)
 	router.DELETE("v1/cluster/id/namespace/:namespace/device/:name", deviceRouter.DeleteDevice)
 	router.PUT("v1/cluster/id/device", deviceRouter.UpdateDevice)
 
